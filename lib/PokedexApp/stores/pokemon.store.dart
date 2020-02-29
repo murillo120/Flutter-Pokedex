@@ -91,4 +91,25 @@ abstract class _PokemonStoreBase with Store {
     return Future.delayed(Duration(seconds: 1));
 
   }
+
+  void filterPokemons(String search){
+
+    newList.clear();
+
+    if (search.isEmpty) {
+      listToset = oldList.asObservable();
+    }
+
+
+
+    oldList.forEach((f){
+      if(f.name.toLowerCase().contains(search)){
+        newList.add(f);
+
+      }
+    });
+
+    listToset = newList.asObservable();
+
+  }
 }

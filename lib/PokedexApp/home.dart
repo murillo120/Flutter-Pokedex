@@ -67,6 +67,7 @@ class PokedexHome extends StatelessWidget {
               child: Container(
                 color: Colors.white,
                 child: TextField(
+                  onChanged: pokeStore.filterPokemons,
                   decoration: InputDecoration(
                     hintText: "Pesquise...  ",
                     focusedBorder: OutlineInputBorder(),

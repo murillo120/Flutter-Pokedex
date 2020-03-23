@@ -16,7 +16,7 @@ class FinanceApp extends StatelessWidget {
       child: Observer(
         builder: (_) => SingleChildScrollView(
           child: FutureBuilder(
-            //future: finance.callCurrency(),
+            future: finance.callCurrency(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(

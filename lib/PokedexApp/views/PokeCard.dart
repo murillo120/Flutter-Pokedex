@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobxlearn/PokedexApp/models/pokedex/pokemon.dart';
+import 'package:mobxlearn/PokedexApp/views/PokeCard_evolutions.dart';
 
-class PokeCard extends StatelessWidget {
+import 'PokeCard_about.dart';
+
+class PokeCard extends StatefulWidget {
   final Pokemon pokemon;
-
   PokeCard(this.pokemon);
 
   @override
-  Widget build(BuildContext context) {
-    var cardColor;
-    var chipColor;
+  _PokeCardState createState() => _PokeCardState(this.pokemon);
+}
 
+class _PokeCardState extends State<PokeCard>
+    with SingleTickerProviderStateMixin {
+  final Pokemon pokemon;
+
+  _PokeCardState(this.pokemon);
+
+  var cardColor;
+  var chipColor;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     switch (pokemon.type[0]) {
       case "Grass":
-        cardColor = Color.fromRGBO(118, 214, 160, 1);
-        chipColor = Color.fromRGBO(0, 204, 55, 1);
+        cardColor = Color.fromRGBO(2, 191, 145, 1);
+        chipColor = Color.fromRGBO(0, 204, 55, 0.9);
         break;
       case "Fire":
-        cardColor = Color.fromRGBO(255, 134, 48, 1);
+        cardColor = Color.fromRGBO(255, 108, 82, 1);
         chipColor = Color.fromRGBO(255, 106, 0, 1);
         break;
       case "Water":
@@ -51,88 +72,178 @@ class PokeCard extends StatelessWidget {
         break;
     }
 
-    return Observer(
-      builder: (_) {
-        return Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(100))),
-          height: 200,
-          width: 221,
-          child: Card(
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.black, width: 1),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            color: cardColor,
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment(0.8, -1),
-                    child: Text(
-                      "#${pokemon.num}",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Text(
-                    pokemon.name,
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: Row(
-                        children: <Widget>[
-                          Image.network(
-                            pokemon.img,
-                            height: 105,
-                            width: 105,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: cardColor,
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.favorite_border),
+            onPressed: () {
+              print("favorited");
+            },
+          )
+        ],
+      ),
+      bottomSheet: DefaultTabController(
+        length: 3,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: 370,
+              color: cardColor,
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(50),
+                          topLeft: Radius.circular(50))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      TabBar(
+                        tabs: <Widget>[
+                          Tab(
+                            child: Text(
+                              "About",
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Chip(
-                                backgroundColor: chipColor,
-                                label: Text(
-                                  pokemon.type[0],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              pokemon.type.length >= 2
-                                  ? Chip(
-                                      backgroundColor: chipColor,
-                                      label: Text(
-                                        pokemon.weaknesses[1],
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
-                                  : Container(),
-                            ],
+                          Tab(
+                            child: Text(
+                              "Base Stats",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                          Tab(
+                            child: Text(
+                              "Evolution",
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ),
                         ],
                       ),
+                      Expanded(
+                        child: TabBarView(
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 40, right: 40, top: 30),
+                              child: PokeCardAbout(pokemon),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 40, right: 40),
+                              child: PokeCardEvolutions(),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 40, right: 40),
+                              child: PokeCardEvolutions(),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  )),
+            ),
+          ],
+        ),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            color: cardColor,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(18, 5, 18, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(pokemon.name,
+                      style: TextStyle(color: Colors.white, fontSize: 32)),
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: Text("#${pokemon.num}",
+                          style: TextStyle(color: Colors.white, fontSize: 20))),
+                  Row(children: generateChips(pokemon.type)),
+                  Container(
+                    child: Stack(
+                      children: <Widget>[
+                        Opacity(
+                            opacity: 0.1,
+                            child: Image.asset("assets/images/pokeball.png")),
+                        Center(
+                          child: Image.network(
+                            pokemon.img,
+                            height: 120,
+                            width: 120,
+                          ),
+                        )
+                      ],
                     ),
                   )
                 ],
               ),
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
+  }
+
+  List<Widget> generateChips(List<String> weakTypes) {
+    var chipColor;
+    List<Widget> listChips = List<Widget>();
+
+    for (var item in weakTypes) {
+      switch (item) {
+        case "Grass":
+          chipColor = Color.fromRGBO(0, 204, 55, 0.9);
+          break;
+        case "Fire":
+          chipColor = Color.fromRGBO(255, 106, 0, 1);
+          break;
+        case "Water":
+          chipColor = Color.fromRGBO(0, 110, 255, 1);
+          break;
+        case "Bug":
+          chipColor = Color.fromRGBO(0, 204, 112, 1);
+          break;
+        case "Normal":
+          chipColor = Color.fromRGBO(61, 94, 69, 1);
+          break;
+        case "Fighting":
+          chipColor = Color.fromRGBO(255, 0, 0, 1);
+          break;
+        case "Poison":
+          chipColor = Color.fromRGBO(180, 70, 240, 1);
+          break;
+        case "Ground":
+          chipColor = Color.fromRGBO(194, 117, 0, 1);
+          break;
+        case "Psychic":
+          chipColor = Color.fromRGBO(255, 227, 13, 1);
+          break;
+        case "Electric":
+          chipColor = Color.fromRGBO(255, 227, 13, 1);
+          break;
+        case "Ice":
+          chipColor = Color.fromRGBO(70, 232, 250, 1);
+          break;
+        case "Flying":
+          chipColor = Color.fromRGBO(84, 164, 255, 1);
+          break;
+      }
+
+      listChips.add(Chip(
+        label: Text(
+          item,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: chipColor,
+      ));
+    }
+
+    return listChips;
   }
 }

@@ -4,6 +4,8 @@ import 'package:mobxlearn/PokedexApp/stores/pokemon.store.dart';
 import 'package:mobxlearn/PokedexApp/views/PokeCard.dart';
 import 'package:provider/provider.dart';
 
+import 'PokeList.dart';
+
 class CustomGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -39,14 +41,22 @@ class CustomGridView extends StatelessWidget {
                 return RefreshIndicator(
                   onRefresh: pokemonStore.refreshPage,
                   child: GridView.builder(
-                    itemCount: pokemonStore.listToset.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 2.0,
-                        mainAxisSpacing: 2.0),
-                    itemBuilder: (context, index) {
-                      return PokeCard(pokemonStore.listToset[index]);
-                    }),
+                      itemCount: pokemonStore.listToset.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 2.0,
+                          mainAxisSpacing: 2.0),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: (){
+                            print("click");
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (_) => PokeCard(pokemonStore.listToset[index])
+                            ));
+                            PokeCard(pokemonStore.listToset[index]);
+                          },
+                            child: PokeList(pokemonStore.listToset[index]));
+                      }),
                 );
               },
             );
